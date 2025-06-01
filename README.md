@@ -193,4 +193,3 @@ Este projeto é licenciado sob a Licença MIT.
 ---
 
 Feito por [Kevin Melo/https://github.com/kevinmelo-dev]
-```
