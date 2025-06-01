@@ -8,7 +8,6 @@ API de autenticação robusta construída com NestJS, utilizando login local (em
 * [Tecnologias Utilizadas](#tecnologias-utilizadas)
 * [Estrutura do Projeto](#estrutura-do-projeto)
 * [Pré-requisitos](#pré-requisitos)
-* [Configuração do Ambiente](#configuração-do-ambiente)
 * [Instalação e Execução](#instalação-e-execução)
 * [Endpoints da API](#endpoints-da-api)
 * [Testes](#testes)
@@ -75,7 +74,7 @@ O projeto segue a estrutura padrão de aplicações NestJS, com os principais di
 ├── tsconfig.json
 └── README.md
 ```
-*(Esta é uma representação simplificada. Consulte os prints da estrutura para mais detalhes sobre subpastas como `dto`, `guards`, `strategies` dentro de cada módulo).*
+*(Esta é uma representação simplificada. Consulte a estrutura para mais detalhes sobre subpastas como `dto`, `guards`, `strategies` dentro de cada módulo).*
 
 ## Pré-requisitos
 
@@ -83,13 +82,28 @@ O projeto segue a estrutura padrão de aplicações NestJS, com os principais di
 * npm (v11.3.0 ou superior)
 * Docker
 
-## Configuração do Ambiente
+### Configuração dos Provedores OAuth
 
-### Variáveis de Ambiente
+* **Google:** Configure um ID de cliente OAuth 2.0 no Google Cloud Console e adicione a `GOOGLE_CALLBACK_URL` às URIs de redirecionamento autorizadas.
+* **Facebook:** Crie um App no Facebook for Developers, configure o Login do Facebook e adicione a `FACEBOOK_CALLBACK_URL` às URIs de redirecionamento OAuth válidos.
 
-1.  Copie `.env.example` para `.env`.
-2.  Preencha as variáveis no arquivo `.env`:
+## Instalação e Execução
 
+1.  **Clone o repositório:**
+    ```bash
+    git clone https://github.com/kevinmelo-dev/nestjs-auth-api.git
+    cd nestjs-auth-api
+    ```
+
+2.  **Instale as dependências:**
+    ```bash
+    npm install
+    ```
+
+3.  **Configure o arquivo `.env`.**
+    ```bash
+    cp .env.example .env
+    ```
     ```dotenv
     PORT=3000
 
@@ -111,26 +125,6 @@ O projeto segue a estrutura padrão de aplicações NestJS, com os principais di
     FACEBOOK_APP_SECRET="seu_facebook_app_secret_aqui"
     FACEBOOK_CALLBACK_URL="http://localhost:3000/api/v1/auth/facebook/callback"
     ```
-
-### Configuração dos Provedores OAuth
-
-* **Google:** Configure um ID de cliente OAuth 2.0 no Google Cloud Console e adicione a `GOOGLE_CALLBACK_URL` às URIs de redirecionamento autorizadas.
-* **Facebook:** Crie um App no Facebook for Developers, configure o Login do Facebook e adicione a `FACEBOOK_CALLBACK_URL` às URIs de redirecionamento OAuth válidos.
-
-## Instalação e Execução
-
-1.  **Clone o repositório:**
-    ```bash
-    git clone https://github.com/kevinmelo-dev/nestjs-auth-api.git
-    cd nestjs-auth-api
-    ```
-
-2.  **Instale as dependências:**
-    ```bash
-    npm install
-    ```
-
-3.  **Configure o arquivo `.env`.**
 
 4.  **Inicie o container do PostgreSQL:**
     ```bash
