@@ -121,7 +121,7 @@ O projeto segue a estrutura padrão de aplicações NestJS, com os principais di
 
 1.  **Clone o repositório:**
     ```bash
-    git clone <https://github.com/kevinmelo-dev/nestjs-auth-api.git>
+    git clone https://github.com/kevinmelo-dev/nestjs-auth-api.git
     cd nestjs-auth-api
     ```
 
