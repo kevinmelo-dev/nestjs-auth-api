@@ -1,0 +1,17 @@
+# docker-compose.yml
+services:
+  postgres_db:
+    image: postgres:15 # Você pode escolher a versão do Postgres que preferir
+    container_name: auth_api_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-root} # Use variáveis de ambiente ou defina aqui
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin123}
+      POSTGRES_DB: ${POSTGRES_DB:-auth_api}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432" # Mapeia a porta do container para a porta do host
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persiste os dados do banco
+
+volumes:
+  postgres_data: # Define um volume nomeado para persistência
