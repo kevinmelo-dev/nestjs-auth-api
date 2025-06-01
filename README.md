@@ -1,4 +1,3 @@
-```markdown
 # NEST.JS AUTH API
 
 API de autenticação robusta construída com NestJS, utilizando login local (email/senha) e social (Google e Facebook). O projeto gerencia autenticação via JWT (JSON Web Tokens) e protege rotas utilizando Guards e Strategies do Passport.js, com persistência de dados em PostgreSQL via Prisma ORM.
