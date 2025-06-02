@@ -53,6 +53,7 @@ export class UsersController {
     };
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':username')
   async getUserProfile(@Param('username') username: string) {
     const user = await this.usersService.findByUsername(username);
@@ -63,6 +64,17 @@ export class UsersController {
         statusCode: HttpStatus.OK,
         message: "Perfil do usuário carregado com sucesso.",
         data: new PublicUserProfileResponseDto(user),
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  async getAllUsers() {
+    const users = await this.usersService.findAll();
+    return {
+        statusCode: HttpStatus.OK,
+        message: "Lista de usuários carregada com sucesso.",
+        data: users.map(user => new PublicUserProfileResponseDto(user)),
     };
   }
 }

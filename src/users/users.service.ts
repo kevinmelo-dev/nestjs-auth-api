@@ -8,6 +8,16 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
+  async findAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    
+    return users;
+  }
+
   async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
 
     const user = await this.prisma.user.findUnique({
