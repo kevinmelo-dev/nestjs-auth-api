@@ -7,12 +7,27 @@ import { GoogleOAuthGuard } from './guards/google-oauth.guard';
 import { FacebookOAuthGuard } from './guards/facebook-oauth.guard';
 import { User as UserModel } from '@prisma/client';
 import { Response } from 'express';
+import { ConfigService } from '@nestjs/config'; 
 
-@Controller('auth') 
+@Controller('auth')
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
+  private readonly frontendSocialCallbackUrl: string;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {
+    this.frontendSocialCallbackUrl = this.configService.get<string>('FRONTEND_SOCIAL_CALLBACK_URL') || 'http://localhost:3001/social-callback';
+
+    if (!this.frontendSocialCallbackUrl) {
+      this.logger.warn(
+        'FRONTEND_SOCIAL_CALLBACK_URL não está definida no .env! O redirecionamento para o frontend após login social pode falhar. Usando valor padrão http://localhost:3001/social-callback',
+      );
+      
+      this.frontendSocialCallbackUrl = 'http://localhost:3001/social-callback';
+    }
+  }
 
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -31,7 +46,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Request() req, @Body() loginUserDto: LoginUserDto) 
-  { 
+  {
     return this.authService.login(req.user);
   }
 
@@ -40,21 +55,19 @@ export class AuthController {
   async googleAuth(@Request() req) {}
 
   @Get('google/callback')
-  @UseGuards(GoogleOAuthGuard) 
+  @UseGuards(GoogleOAuthGuard)
   async googleAuthRedirect(@Request() req, @Res() res: Response) 
   {
     if (!req.user) {
-      this.logger.error('Usuário não encontrado no retorno do Google OAuth.');
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Falha na autenticação com o Google.' });
+      this.logger.error('Google OAuth: Usuário não encontrado no objeto de requisição após callback.');
+      return res.redirect(`${this.frontendSocialCallbackUrl}?error=google_authentication_failed&message=UserNotFound`);
     }
 
-    const loginData = await this.authService.login(req.user as Omit<UserModel, 'password'>);
+    const loginResult = await this.authService.login(req.user as Omit<UserModel, 'password'>);
+    const token = loginResult.accessToken;
 
-    res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: 'Autenticação com Google concluída com sucesso.',
-      data: loginData,
-    });
+    this.logger.log(`Google Login: Redirecionando para o frontend com token: ${this.frontendSocialCallbackUrl}?token=...`);
+    res.redirect(`${this.frontendSocialCallbackUrl}?token=${token}`);
   }
 
   @Get('facebook')
@@ -63,20 +76,16 @@ export class AuthController {
 
   @Get('facebook/callback')
   @UseGuards(FacebookOAuthGuard)
-  async facebookAuthRedirect(@Request() req, @Res() res: Response) 
-  {
+  async facebookAuthRedirect(@Request() req, @Res() res: Response) {
     if (!req.user) {
-      this.logger.error('Usuário não encontrado no retorno do Facebook OAuth.');
-      return res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Falha na autenticação com o Facebook.' });
+      this.logger.error('Facebook OAuth: Usuário não encontrado no objeto de requisição após callback.');
+      return res.redirect(`${this.frontendSocialCallbackUrl}?error=facebook_authentication_failed&message=UserNotFound`);
     }
 
-    const loginData = await this.authService.login(req.user as Omit<UserModel, 'password'>);
-    
-    res.status(HttpStatus.OK).json({
-      statusCode: HttpStatus.OK,
-      message: 'Autenticação com Facebook concluída com sucesso.',
-      data: loginData,
-    });
-  }
+    const loginResult = await this.authService.login(req.user as Omit<UserModel, 'password'>);
+    const token = loginResult.accessToken;
 
+    this.logger.log(`Facebook Login: Redirecionando para o frontend com token: ${this.frontendSocialCallbackUrl}?token=...`);
+    res.redirect(`${this.frontendSocialCallbackUrl}?token=${token}`);
+  }
 }
