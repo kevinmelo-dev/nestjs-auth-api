@@ -12,6 +12,7 @@ async function bootstrap() {
   app.use(helmet()); 
 
   app.enableCors({
+    // TODO: Configurar CORS para permitir solicitações de origens específicas em produção
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
@@ -38,7 +39,8 @@ async function bootstrap() {
 
   const port = process.env.PORT || 3000;
   await app.listen(port);
-  console.log(`Application is running on: http://localhost:${port}/api/v1`); 
+
+  console.log(`Application is running on: ${await app.getUrl()}`);
   
 }
 bootstrap();

@@ -13,7 +13,6 @@ export const AuthenticatedUser = createParamDecorator(
   },
 );
 
-
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -41,11 +40,13 @@ export class UsersController {
   async updateMyProfile(
     @AuthenticatedUser() user: Omit<UserModel, 'password'>,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ) 
+  {
     const updatedUser = await this.usersService.updateUser({
       where: { id: user.id },
       data: updateUserDto,
     });
+
     return {
         statusCode: HttpStatus.OK,
         message: "Perfil do usuário logado atualizado com sucesso.",
@@ -55,11 +56,14 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':username')
-  async getUserProfile(@Param('username') username: string) {
+  async getUserProfile(@Param('username') username: string) 
+  {
     const user = await this.usersService.findByUsername(username);
+
     if (!user) {
       throw new NotFoundException(`Usuário '${username}' não encontrado.`);
     }
+
     return {
         statusCode: HttpStatus.OK,
         message: "Perfil do usuário carregado com sucesso.",
@@ -69,8 +73,10 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAllUsers() {
+  async getAllUsers() 
+  {
     const users = await this.usersService.findAll();
+    
     return {
         statusCode: HttpStatus.OK,
         message: "Lista de usuários carregada com sucesso.",
