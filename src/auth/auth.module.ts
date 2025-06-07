@@ -11,30 +11,30 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { FacebookStrategy } from './strategies/facebook.strategy';
 
 @Module({
-  imports: [
-    UsersModule, 
-    PassportModule.register({ defaultStrategy: 'jwt' }), 
-    JwtModule.registerAsync({
-      imports: [ConfigModule], 
-      inject: [ConfigService], 
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRATION_TIME'),
-        },
-      }),
-    }),
-    ConfigModule, 
-  ],
-  controllers: [AuthController],
-  providers: [
-    AuthService,
-    LocalStrategy,
-    JwtStrategy,
-    GoogleStrategy,   
-    FacebookStrategy,  
-  ],
-  exports: [AuthService, JwtModule], 
+    imports: [
+        UsersModule, 
+        PassportModule.register({ defaultStrategy: 'jwt' }), 
+        JwtModule.registerAsync({
+        imports: [ConfigModule], 
+        inject: [ConfigService], 
+        useFactory: async (configService: ConfigService) => ({
+            secret: configService.get<string>('JWT_SECRET'),
+            signOptions: {
+            expiresIn: configService.get<string>('JWT_EXPIRATION_TIME'),
+            },
+        }),
+        }),
+        ConfigModule, 
+    ],
+    controllers: [AuthController],
+    providers: [
+        AuthService,
+        LocalStrategy,
+        JwtStrategy,
+        GoogleStrategy,   
+        FacebookStrategy,  
+    ],
+    exports: [AuthService, JwtModule], 
 })
 
 export class AuthModule {}

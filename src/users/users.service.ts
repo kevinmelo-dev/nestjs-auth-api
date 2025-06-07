@@ -1,4 +1,3 @@
-// src/users/users.service.ts
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, User } from '@prisma/client';
@@ -8,7 +7,8 @@ import * as bcrypt from 'bcrypt';
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> 
+  {
     const users = await this.prisma.user.findMany({
       orderBy: {
         createdAt: 'desc',
@@ -18,8 +18,8 @@ export class UsersService {
     return users;
   }
 
-  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
-
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> 
+  {
     const user = await this.prisma.user.findUnique({
       where: userWhereUniqueInput,
     });
@@ -27,8 +27,8 @@ export class UsersService {
     return user;
   }
 
-  async findByUsername(username: string): Promise<User | null> {
-    
+  async findByUsername(username: string): Promise<User | null> 
+  {
     const user = await this.prisma.user.findUnique({
       where: { username },
     });
@@ -36,8 +36,8 @@ export class UsersService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-
+  async findByEmail(email: string): Promise<User | null> 
+  {
     const user = await this.prisma.user.findUnique({
       where: { email },
     });
@@ -45,8 +45,8 @@ export class UsersService {
     return user;
   }
 
-  async createUser(data: Prisma.UserCreateInput): Promise<User> {
-
+  async createUser(data: Prisma.UserCreateInput): Promise<User> 
+  {
     if (data.username) {
       const existingByUsername = await this.findByUsername(data.username);
 
@@ -71,7 +71,8 @@ export class UsersService {
     });
   }
 
-  async updateUser(params: { where: Prisma.UserWhereUniqueInput; data: Prisma.UserUpdateInput; }): Promise<User> {
+  async updateUser(params: { where: Prisma.UserWhereUniqueInput; data: Prisma.UserUpdateInput; }): Promise<User> 
+  {
     const { where, data } = params;
 
     if (data.username && typeof data.username === 'string') {
@@ -104,7 +105,8 @@ export class UsersService {
     }
   }
 
-  omitPassword(user: User) {
+  omitPassword<T extends User>(user: T): Omit<T, 'password'> 
+  {
     const { password, ...result } = user;
     return result;
   }
